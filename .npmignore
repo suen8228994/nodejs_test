@@ -1,0 +1,11 @@
+node_modules
+.travis.yml
+examples/
+.jshintrc
+.jshintignore
+coverage/
+screenshot/
+*.sw*
+*.un~
+reports/
+screenshots/

@@ -1,0 +1,17 @@
+.DS_Store
+node_modules
+npm-debug.log
+.idea/*
+Thumbs.db
+coverage/
+.project
+build/
+macaca-logs/
+*.sw*
+*.un~
+diff.png
+pic1.png
+pic2.png
+reports/
+screenshots/
+.env
