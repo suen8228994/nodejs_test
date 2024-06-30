@@ -1,5 +1,6 @@
 const { sleep } = require('app-inspector/lib/common/helper');
 const { exec } = require('child_process');
+const { log } = require('console');
 var wd = require('macaca-wd');
 var index=25;
 var element_length=25;
@@ -18,61 +19,73 @@ async function runTest() {
             platformName: 'Android',
             
             autoAcceptAlerts: false,
-            package: 'com.android.chrome',
-            udid:'a283551'
+            // package: 'com.android.chrome',
+            package:'org.mozilla.firefox',
+            // udid:'a283551'
+            udid:'192.168.1.199:43397'
             
         });
         await driver.sleep(1000); // 等待应用加载
 
         console.log('应用已成功启动！');
-        if(await driver.hasElementById('com.android.chrome:id/signin_fre_continue_button')){
-          await driver.waitForElementById('com.android.chrome:id/signin_fre_continue_button',1000).click();
+        for(let i=0;i<3;i++){
+          if(await driver.hasElementByXPath('//*[@text="暂时不要"]')){
+            await driver.waitForElementByXPath('//*[@text="暂时不要"]',1000).click();
+          }        
         }
-            
-        if(await driver.hasElementById('com.android.chrome:id/button_secondary')){
-          await driver.waitForElementById('com.android.chrome:id/button_secondary',1000).click();
+        if(await driver.hasElementById('org.mozilla.firefox:id/toolbar')){
+          await driver.waitForElementById('org.mozilla.firefox:id/toolbar',1000).click();
         }
-        if(await driver.hasElementById('com.android.chrome:id/no_button')){
-            await driver.waitForElementById('com.android.chrome:id/no_button',1000).click();
-        }
-        await driver.sleep(3000);
-        if(await driver.hasElementById('com.android.chrome:id/ack_button')){
-            await driver.waitForElementById('com.android.chrome:id/ack_button',1000).click();
-        }
-        if(await driver.hasElementById('com.android.chrome:id/button_secondary')){
-          await driver.waitForElementById('com.android.chrome:id/button_secondary',1000).click();
-        }
+        var topBar=await driver.waitForElementById('org.mozilla.firefox:id/mozac_browser_toolbar_edit_url_view',500);
         
-        var topBar=await driver.waitForElementById('com.android.chrome:id/search_box_text', 1000);
+        // if(await driver.hasElementById('com.android.chrome:id/signin_fre_continue_button')){
+        //   await driver.waitForElementById('com.android.chrome:id/signin_fre_continue_button',1000).click();
+        // }
+            
+        // if(await driver.hasElementById('com.android.chrome:id/button_secondary')){
+        //   await driver.waitForElementById('com.android.chrome:id/button_secondary',1000).click();
+        // }
+        // if(await driver.hasElementById('com.android.chrome:id/no_button')){
+        //     await driver.waitForElementById('com.android.chrome:id/no_button',1000).click();
+        // }
+        // await driver.sleep(3000);
+        // if(await driver.hasElementById('com.android.chrome:id/ack_button')){
+        //     await driver.waitForElementById('com.android.chrome:id/ack_button',1000).click();
+        // }
+        // if(await driver.hasElementById('com.android.chrome:id/button_secondary')){
+        //   await driver.waitForElementById('com.android.chrome:id/button_secondary',1000).click();
+        // }
+        
+        // var topBar=await driver.waitForElementById('com.android.chrome:id/search_box_text', 1000);
         
 
-        var link=['https://www.baidu.com']
-        for(let i=0; i<link.length;i++){
-            if (topBar) {
-                await topBar.click()
-                await driver.sleep(1000);
-                await driver.waitForElementById('com.android.chrome:id/url_bar',1000).sendKeys(link[i]);
-                await driver.keys('\uE007');
-                console.log('网址输入完成并访问');
-            } else {
-                console.error('未能找到URL输入栏');
-            }
-            await driver.sleep(2000); 
+        var link=['https://haodersese.com/']
+        if (topBar) {
+          await topBar.click()
+          await driver.sleep(1000);
+          await driver.waitForElementById('com.android.chrome:id/url_bar',1000).sendKeys(link[0]);
+          await driver.keys('\uE007');
+          console.log('网址输入完成并访问');
+        } else {
+          console.error('未能找到URL输入栏');
         }
-        // await driver.elementByClassName('inquiry_layer_btn').click();
-        // await driver.waitForElementByXPath('//*[@text="汽车之家_看车买车用车换车_都回汽车之家"]/android.view.View[1]/android.view.View[1]/android.view.View[10]/android.view.View[1]/android.widget.TextView[1]"]',1000).click();
-        // await driver.waitForElementByXPath('//*[@text="汽车之家_看车买车用车换车_都回汽车之家"]/android.view.View[1]/android.view.View[1]/android.view.View[10]/android.view.View[1]/android.widget.TextView[1]"]',1000).click();
-        // await driver.waitForElementByXPath('//*[@text="ChtliGO3wyuAcPYlAAAbj25_uo8113"]',1000).click();
-        // await driver.waitForElementByXPath('//*[@text="ChtliGO3wyuAcPYlAAAbj25_uo8113"]',1000).click();
+      await driver.sleep(2000); 
+      if(await driver.hasElementById('com.android.chrome:id/button_secondary')){
+        await driver.waitForElementById('com.android.chrome:id/button_secondary',1000).click();
+      }
+        
+        
         // await driver.sleep(2000);
-        await driver.back();
-        await driver.sleep(2000);
+        
+        
+        await clickAB();
+        
         // await driver.keys('home');
         // let touch = {x: 0, y: 0};
         // await driver.sendActions('drag', {fromX: 388, fromY:1425, toX:388, toY:1025, duration: 0.25});
-        if(index<=element_length){
-          await clash();
-        }
+        // if(index<=element_length){
+        //   await clash();
+        // }
     } catch (e) {
         console.error('启动应用时出错:', e);
         if(e.data.includes('Internal Server Error')||e.error.includes('[init({"platformName":"Android","reuse":true,"autoAcceptAlerts":false,"package":"com.android.chrome","udid":"a283551"})]')){
@@ -80,11 +93,29 @@ async function runTest() {
             adbExec();
             console.error('执行命令:', e.data);
         }
+        count=1;
+      startWuji();
         
     } finally {
         // await driver.quit();
         console.log('测试结束');
     }
+}
+/**
+ * 点击无极IP
+ */
+async function clickWJ(){
+  await driver.init({
+    platformName: 'Android',
+    reuse: 1000000, // 重用现有会话
+    autoAcceptAlerts: false,
+    package: 'org.wuji',
+    udid:'192.168.1.199:43397'
+    
+  });
+  if(await driver.hasElementById('org.wuji:id/change_ip')){
+    await driver.waitForElementById('org.wuji:id/change_ip').click();
+  }
 }
 
 // 定义 scrollElementIntoView 函数
@@ -109,6 +140,78 @@ async function scrollElementIntoView(driver, element) {
           duration: 1
       });
   // }
+}
+var count=1;
+async function clickAB(){
+  var xpath='//*[@text="HaoDer"]/android.view.View[1]';
+  // var xpath1= '//*[@text="HaoDer"]/android.view.View[1]/android.view.View[2]';
+  // var xpath2= '//*[@text="HaoDer"]/android.view.View[1]/android.widget.TextView[1]';
+  // var xpath3= '//*[@text="HaoDer"]/android.view.View[1]/android.view.View[3]';
+  // var xpath4= '//*[@text="HaoDer"]/android.view.View[1]/android.view.View[4]';
+  // var xpath5= '//*[@text="HaoDer"]/android.view.View[1]/android.view.View[5]';
+  var haoDerElement;
+  try{
+  // for(let i=2;i<10;i++){
+    await driver.sleep(50000);
+    if(driver.hasElementByXPath(xpath)){
+      haoDerElement = await driver.waitForElementByXPath(xpath,5000);
+    }
+    const liuGeGeElements = await haoDerElement.elementsByXPath('//*[@text="HaoDer"]/android.view.View[1]/android.view.View');
+    if(count<liuGeGeElements.length){
+      
+      await driver.sleep(1000);
+      await liuGeGeElements[count].click();
+      await driver.sleep(40000);
+      await driver.back();
+    }
+    if(count<6){
+      count++;
+      runTest();
+    }else{
+      count=1;
+      startWuji();
+      // 如果大于10就切换一下IP然后在执行run
+    }
+  }catch(e){
+    console.error(`Error on iteration:`, e);
+    runTest();
+  }
+    
+}
+async function startWuji(){
+  await driver.init({
+    platformName: 'Android',
+    reuse: 1000000, // 重用现有会话
+    autoAcceptAlerts: false,
+    package: 'org.wuji',
+    udid:'192.168.1.200:42971'
+    
+  });
+  await driver.sleep(1000);
+  let xpath='org.wuji:id/change_ip';
+  if(driver.hasElementById(xpath)){
+    driver.waitForElementById(xpath,1000).click();
+    await driver.sleep(5000);
+  }
+  runTest();
+}
+
+async function connectADB(){
+  let adbCommand='arp -a';
+  await exec(adbCommand, (error, stdout, stderr) => {
+    if (error) {
+      console.error('执行 adb 命令时出错:',error.message);
+      return;
+    }
+    if (stderr) {
+      console.error('adb 命令输出错误:', stderr);
+      return;
+    }
+    
+    
+    // 打印 adb 命令的输出结果
+    console.log('adb 命令输出:',stdout);
+  });
 }
 
 async function updateElements(driver, elements) {
@@ -137,6 +240,7 @@ async function updateElements(driver, elements) {
   
   return elements;
 }
+
 
 
 

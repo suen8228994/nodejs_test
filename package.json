@@ -53,6 +53,8 @@
   "homepage": "https://macacajs.github.io",
   "license": "MIT",
   "dependencies": {
+    "helper": "^0.0.13",
+    "jwebdriver": "^2.3.6",
     "macaca-android": "*",
     "macaca-chrome": "*",
     "macaca-electron": "*",
